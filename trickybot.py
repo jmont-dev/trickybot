@@ -51,6 +51,30 @@ async def badbot(ctx) :
     await ctx.send(message, tts=True)
 
 @client.command()
+async def goodbot(ctx) :
+
+    messages = [f"I am pleased.",
+                f"I am glad you approve of me {ctx.message.author.name}.",
+                f"This gives me great happiness.",
+                f"*Happy beep*"]
+
+    message = random.choice(messages)      
+
+    await ctx.send(message, tts=True)
+
+@client.command()
+async def videogamename(ctx) :
+
+    messages = [f"Tales of Bloomberia",
+                f"Happy dogs.",
+                f"This gives me great happiness.",
+                f"*Happy beep*"]
+
+    message = random.choice(messages)      
+
+    await ctx.send(message)
+
+@client.command()
 async def dick(ctx, dickSize=5, jizz="") :
     dickString="8"
     for x in range(dickSize):
