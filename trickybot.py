@@ -4,7 +4,11 @@ import os
 from datetime import datetime
 import random
 
-client = commands.Bot(command_prefix=".")
+intents = discord.Intents().default()
+intents.members = True
+# create the instance
+
+client = commands.Bot(command_prefix=".", intents=intents)
 token = os.getenv("trickytoken")
 
 @client.event
@@ -64,6 +68,27 @@ async def time(ctx) :
     print("Current Time =", current_time)
 
     await ctx.send(f"The time is "+current_time)
+
+@client.command()
+async def teams(ctx, numTeams=2) :
+
+    if ctx.author.voice and ctx.author.voice.channel:
+        channel = ctx.author.voice.channel
+        print(channel.name)
+    else:
+        await ctx.send(f"You are not connected to a voice channel {ctx.message.author.name}")
+        return
+
+    members = channel.members #finds members connected to the channel
+
+    memberNames = [] #(list)
+    for member in members:
+        memberNames.append(member.name)
+
+    for team in range(numTeams):
+        players = []
+        players.append(random.choice(memberNames))
+        await ctx.send(f"Team {team+1}: {memberNames}")
 
 @client.command()
 async def clear(ctx, amount=3) :
