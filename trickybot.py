@@ -74,21 +74,24 @@ async def teams(ctx, numTeams=2) :
 
     if ctx.author.voice and ctx.author.voice.channel:
         channel = ctx.author.voice.channel
-        print(channel.name)
     else:
         await ctx.send(f"You are not connected to a voice channel {ctx.message.author.name}")
         return
 
-    members = channel.members #finds members connected to the channel
+    unpickedPlayers = [] #(list)
+    for member in channel.members:
+        unpickedPlayers.append(member.name)
 
-    memberNames = [] #(list)
-    for member in members:
-        memberNames.append(member.name)
+    if len(unpickedPlayers)==1:
+        await ctx.send(f"Only one person in voice channel {channel.name}. Cannot make teams.")
+        return
 
     for team in range(numTeams):
-        players = []
-        players.append(random.choice(memberNames))
-        await ctx.send(f"Team {team+1}: {memberNames}")
+        teamMembers = []
+        player = random.choice(unpickedPlayers)
+        teamMembers.append(player)
+        unpickedPlayers.remove(player)
+        await ctx.send(f"Team {team+1}: {teamMembers}")
 
 @client.command()
 async def clear(ctx, amount=3) :
