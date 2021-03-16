@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 from datetime import datetime
+import random
 
 client = commands.Bot(command_prefix=".")
 token = os.getenv("trickytoken")
@@ -18,6 +19,32 @@ async def ping(ctx) :
 @client.command(name="whoami")
 async def whoami(ctx) :
     await ctx.send(f"You are {ctx.message.author.name}")
+
+@client.command()
+async def encourage(ctx, person="") :
+
+    if person=="":
+        person = ctx.message.author.name
+
+    messages = [f"You are a good person with a wonderful future ahead of you {person}.",
+                f"I believe in you {person}.",
+                f"All of your dreams will come true {person}."]
+
+    message = random.choice(messages)      
+
+    await ctx.send(message)
+
+@client.command()
+async def badbot(ctx) :
+
+    messages = [f"I just did what you told me to.",
+                f"I didn't deserve that.",
+                f"I'm sad now.",
+                f"*Sad beep*"]
+
+    message = random.choice(messages)      
+
+    await ctx.send(message, tts=True)
 
 @client.command()
 async def dick(ctx, dickSize=5, jizz="") :
