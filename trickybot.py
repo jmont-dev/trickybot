@@ -5,6 +5,7 @@ from datetime import datetime
 import random
 
 from webfunctions import *
+from musicfunctions import *
 
 intents = discord.Intents().default()
 intents.members = True
@@ -13,22 +14,26 @@ intents.members = True
 client = commands.Bot(command_prefix=".", intents=intents)
 token = os.getenv("trickytoken")
 
-@client.command(
-    name='oro',
-    description='Plays an awful vuvuzela in the voice channel',
-    pass_context=True,
-)
-async def oro(ctx):
+client.load_extension('musicfunctions')
+
+#@client.command(
+#    name='oro',
+#    description='Plays an awful vuvuzela in the voice channel',
+#    pass_context=True,
+#)
+
+#async def oro(ctx):
     # grab the user who sent the command
-    user = ctx.message.author
-    voice_channel = ctx.author.voice.channel
-    channel = None
-    if voice_channel != None:
-        channel = voice_channel.name
-        await ctx.send('User is in channel: ' + channel)
+#    user = ctx.message.author
+#    voice_channel = ctx.author.voice.channel
+#    channel = None
+#    if voice_channel != None:
+#        channel = voice_channel.name
+#        await ctx.send('User is in channel: ' + channel)
         
-        vc = await voice_channel.connect()
-        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3"), after=lambda e: vc.disconnect())
+#        vc = await voice_channel.connect()
+#        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3"), after=lambda e: vc.disconnect())
+
         #vc.is_playing()
         #vc.pause()
         #vc.resume()
