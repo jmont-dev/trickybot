@@ -4,6 +4,21 @@ import os
 from datetime import datetime
 import random
 
+from bs4 import BeautifulSoup
+import urllib.request
+import re
+
+def getLinks(url, searchString):
+    html_page = urllib.request.urlopen(url)
+    soup = BeautifulSoup(html_page, 'html.parser')
+    #print (soup.prettify())
+
+    links = []
+    for link in soup.findAll('a',  href=re.compile(searchString, re.IGNORECASE)):
+        links.append(link.get('href'))
+
+    return links
+
 intents = discord.Intents().default()
 intents.members = True
 # create the instance
@@ -15,6 +30,13 @@ token = os.getenv("trickytoken")
 async def on_ready() :
     await client.change_presence(status = discord.Status.idle, activity = discord.Game("Listening to .help"))
     print("I am online")
+
+
+@client.command()
+async def marco(ctx) :
+    links = getLinks("https://en.wikipedia.org/wiki/Marco", "Marco_")
+    link = random.choice(links)
+    await ctx.send(f"https://en.wikipedia.org/{link}")
 
 @client.command()
 async def ping(ctx) :
