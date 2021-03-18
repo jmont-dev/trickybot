@@ -9,8 +9,6 @@ import threading
 
 import time
 from datetime import datetime
-#import pytz
-#from tzlocal import get_localzone
 
 from webfunctions import *
 from musicfunctions import *
@@ -91,13 +89,6 @@ async def add(ctx, inPoints, inPlayer) :
         player = inPlayer
         points = int(inPoints)
 
-#    if inPlayer.isnumeric():
-#        player = inPoints
-#        points = int(inPlayer)
-#    else:
-#        player = inPlayer
-#        points = int(inPoints)
-
     if player=="":
         await ctx.send(f"No player entered. Cannot add points.")
         return
@@ -125,8 +116,6 @@ async def listen(ctx) :
     #Do an asyncio to timeout if no buzz in a period of time and play sound effect
     #threading.Timer(3, await timeout(ctx), [ctx]).start()
     #threading.Timer(2, timeout, [ctx]).start()
-
-
     await ctx.send(f"Listening for buzzer.")
 
 @client.command()

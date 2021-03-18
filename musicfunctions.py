@@ -53,5 +53,3 @@ async def getVoiceChannel(ctx):
 
 def setup(bot):
     bot.add_cog(MusicPlayer(bot))
-
-
