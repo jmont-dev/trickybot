@@ -6,10 +6,15 @@ class MusicPlayer(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='play')
-    async def play(self, ctx):
+    @commands.command(name='giorno')
+    async def giorno(self, ctx):
         vc = await getVoiceChannel(ctx)
-        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3")) #, after=lambda e: vc.disconnect())
+        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="sounds/buzz.mp3")) #, after=lambda e: vc.disconnect())
+
+    @commands.command(name='play')
+    async def play(ctx, filename=""):
+        vc = await getVoiceChannel(ctx)
+        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=filename)) #, after=lambda e: vc.disconnect())
 
     @commands.command(name='stop')
     async def stop(self, ctx):

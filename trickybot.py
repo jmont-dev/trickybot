@@ -79,6 +79,7 @@ async def add(ctx, inPoints, inPlayer) :
 async def listen(ctx) :
     global buzzerListening
     buzzerListening = True
+    #Do an asyncio to timeout if no buzz in a period of time and play sound effect
     await ctx.send(f"Listening for buzzer.")
 
 @client.command()
@@ -87,6 +88,14 @@ async def b(ctx) :
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
+        #Play buzzer sound effect here
+        #MusicPlayer.play(ctx,"sounds/buzz.mp3")
+        #await ctx.invoke(client.get_command('play'), filename="sounds/buzz.mp3")
+        #await MusicPlayer.play(client, ctx, filename="sounds/buzz.mp3")
+
+        temp = client.get_command(name='play')
+        await temp.callback(ctx, "sounds/buzz.mp3")
+
         await ctx.send(f"Player {ctx.message.author.name} buzzed first! They buzzed at time {currentTime}.")
 
 @client.event
