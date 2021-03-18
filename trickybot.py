@@ -1,9 +1,15 @@
 import discord
 from discord.ext import commands
+
 import os
-from datetime import datetime
 import random
 import asyncio
+import numbers
+
+import time
+from datetime import datetime
+#import pytz
+#from tzlocal import get_localzone
 
 from webfunctions import *
 from musicfunctions import *
@@ -16,6 +22,69 @@ client = commands.Bot(command_prefix=".", intents=intents)
 token = os.getenv("trickytoken")
 
 client.load_extension('musicfunctions')
+
+scores={}
+
+buzzerListening = False
+
+@client.command()
+async def game(ctx) :
+    if ctx.author.voice and ctx.author.voice.channel:
+        channel = ctx.author.voice.channel
+    else:
+        await ctx.send(f"You are not connected to a voice channel {ctx.message.author.name}")
+        return
+
+    global scores  
+
+    scores={}
+    players = [] #(list)
+    for member in channel.members:
+        players.append(member.name)
+        scores[member.name] = 0
+
+    await ctx.send(f"Starting new jeopardy game with players {players}.")
+
+@client.command()
+async def scores(ctx) :
+    global scores
+    await ctx.send(f"Game scores: {scores}.")
+
+@client.command()
+async def add(ctx, inPoints, inPlayer) :
+    
+    #If the player swapped the syntax, swap the two inputs
+    if isinstance(inPlayer, numbers.Number):
+        player = inPoints
+        points = inPlayer
+    else:
+        player = inPlayer
+        points = inPoints
+
+    if player=="":
+        await ctx.send(f"No player entered. Cannot add points.")
+        return
+
+    if points==0:
+        await ctx.send(f"No points specified.")
+
+    global scores
+    scores[player] += points
+    await ctx.send(f"Added {points} points to player {player}. Player {player} now has {scores[player]} points.")
+
+@client.command()
+async def listen(ctx) :
+    global buzzerListening
+    buzzerListening = True
+    await ctx.send(f"Listening for buzzer.")
+
+@client.command()
+async def b(ctx) :
+    currentTime = datetime.now().strftime("%H:%M:%S.%f")
+    global buzzerListening
+    if buzzerListening==True:
+        buzzerListening = False
+        await ctx.send(f"Player {ctx.message.author.name} buzzed first!. They buzzed at time {currentTime}.")
 
 @client.event
 async def on_ready() :
@@ -83,7 +152,6 @@ async def videogamename(ctx) :
 
     messages = [f"Tales of Bloomberia",
                 f"Happy dogs.",
-                f"This gives me great happiness.",
                 f"*Happy beep*"]
 
     message = random.choice(messages)      
@@ -142,10 +210,6 @@ async def teams(ctx, numTeams=2) :
 
     for team in range(0,numTeams):
         await ctx.send(f"Team {team+1}: {teamMembers[team]}")
-
-@client.command()
-async def clear(ctx, amount=3) :
-    await ctx.channel.purge(limit=amount)
 
 
 client.run(token)
