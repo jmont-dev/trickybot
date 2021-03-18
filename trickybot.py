@@ -17,11 +17,12 @@ from musicfunctions import *
 
 intents = discord.Intents().default()
 intents.members = True
-# create the instance
 
+# create the instance
 client = commands.Bot(command_prefix=".", intents=intents)
 token = os.getenv("trickytoken")
 
+#Load external cogs
 client.load_extension('musicfunctions')
 
 #Jeopary Globals
@@ -42,7 +43,7 @@ async def game(ctx) :
     scores={}
     lastDMs={}
 
-    players = [] #(list)
+    players = []
     for member in channel.members:
         players.append(member.name)
         scores[member.name] = 0
@@ -82,12 +83,20 @@ async def add(ctx, inPoints, inPlayer) :
     print(f"inPoints {inPoints}", flush=True)
 
     #If the player swapped the syntax, swap the two inputs
-    if inPlayer.isnumeric():
+    try:
+        int(inPlayer)
         player = inPoints
         points = int(inPlayer)
-    else:
+    except ValueError:
         player = inPlayer
         points = int(inPoints)
+
+#    if inPlayer.isnumeric():
+#        player = inPoints
+#        points = int(inPlayer)
+#    else:
+#        player = inPlayer
+#        points = int(inPoints)
 
     if player=="":
         await ctx.send(f"No player entered. Cannot add points.")
