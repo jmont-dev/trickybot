@@ -1,36 +1,21 @@
 import discord
 from discord.ext import commands
 
-class SimpleCog(commands.Cog):
-    """SimpleCog"""
+class MusicPlayer(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='repeat', aliases=['copy', 'mimic'])
-    async def do_repeat(self, ctx, *, our_input: str):
-        """A simple command which repeats our input.
-        In rewrite Context is automatically passed to our commands as the first argument after self."""
-
-        await ctx.send(our_input)
-
-    @commands.command(name='add', aliases=['plus'])
-    @commands.guild_only()
-    async def do_addition(self, ctx, first: int, second: int):
-        """A simple command which does addition on two integer values."""
-
-        total = first + second
-        await ctx.send(f'The sum of **{first}** and **{second}**  is  **{total}**')
-
-    @commands.command(name='oro')
-    async def oro(self, ctx):
+    @commands.command(name='play')
+    async def play(self, ctx):
         vc = await getVoiceChannel(ctx)
-        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3"), after=lambda e: vc.disconnect())
+        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3")) #, after=lambda e: vc.disconnect())
 
     @commands.command(name='stop')
     async def stop(self, ctx):
         vc = await getVoiceChannel(ctx)
         vc.stop()
+        await vc.disconnect()
 
     @commands.command(name='pause')
     async def pause(self, ctx):
@@ -45,7 +30,7 @@ class SimpleCog(commands.Cog):
     @commands.command(name='disconnect')
     async def disconnect(self, ctx):
         vc = await getVoiceChannel(ctx)
-        vc.disconnect()
+        await vc.disconnect()
 
 #Get the voice channel of the author
 async def getVoiceChannel(ctx):
@@ -62,9 +47,14 @@ async def getVoiceChannel(ctx):
         return vc
 
 def setup(bot):
-    bot.add_cog(SimpleCog(bot))
+    bot.add_cog(MusicPlayer(bot))
 
 
+#@client.command(
+#    name='oro',
+#    description='Plays an awful vuvuzela in the voice channel',
+#    pass_context=True,
+#)
 
 #async def oro(ctx):
     # grab the user who sent the command
@@ -77,5 +67,21 @@ def setup(bot):
         
 #        vc = await voice_channel.connect()
 #        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3"), after=lambda e: vc.disconnect())
-#        return
+
+        #vc.is_playing()
+        #vc.pause()
+        #vc.resume()
+        #vc.stop()        
+        #vc.disconnect()
+
+#        vc = await ctx.join_voice_channel(voice_channel)
+#        player = vc.create_ffmpeg_player('oro.mp3', after=lambda: print('done'))
+#        player.start()
+#        while not player.is_done():
+#            await asyncio.sleep(1)
+#        player.stop()
+#        await vc.disconnect()
+#    else:
+#        await ctx.send('User is not in a channel.')
+
 

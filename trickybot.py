@@ -16,40 +16,6 @@ token = os.getenv("trickytoken")
 
 client.load_extension('musicfunctions')
 
-#@client.command(
-#    name='oro',
-#    description='Plays an awful vuvuzela in the voice channel',
-#    pass_context=True,
-#)
-
-#async def oro(ctx):
-    # grab the user who sent the command
-#    user = ctx.message.author
-#    voice_channel = ctx.author.voice.channel
-#    channel = None
-#    if voice_channel != None:
-#        channel = voice_channel.name
-#        await ctx.send('User is in channel: ' + channel)
-        
-#        vc = await voice_channel.connect()
-#        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3"), after=lambda e: vc.disconnect())
-
-        #vc.is_playing()
-        #vc.pause()
-        #vc.resume()
-        #vc.stop()        
-        #vc.disconnect()
-
-#        vc = await ctx.join_voice_channel(voice_channel)
-#        player = vc.create_ffmpeg_player('oro.mp3', after=lambda: print('done'))
-#        player.start()
-#        while not player.is_done():
-#            await asyncio.sleep(1)
-#        player.stop()
-#        await vc.disconnect()
-#    else:
-#        await ctx.send('User is not in a channel.')
-
 @client.event
 async def on_ready() :
     await client.change_presence(status = discord.Status.idle, activity = discord.Game("Listening to .help"))
@@ -57,7 +23,7 @@ async def on_ready() :
 
 @client.command()
 async def imout(ctx) :
-    await ctx.send(f"https://www.youtube.com/watch?v=nZMaBQDXOkk")
+    await ctx.send(f"https://www.youtube.com/watch?v=JzFo83UOZY8")
 
 @client.command()
 async def marco(ctx) :
