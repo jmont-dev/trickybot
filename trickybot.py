@@ -5,6 +5,7 @@ import os
 import random
 import asyncio
 import numbers
+import threading
 
 import time
 from datetime import datetime
@@ -75,11 +76,24 @@ async def add(ctx, inPoints, inPlayer) :
     scores[player] += points
     await ctx.send(f"Added {points} points to player {player}. Player {player} now has {scores[player]} points.")
 
+async def timeout(ctx):
+    global buzzerListening
+    if buzzerListening==True:
+        buzzerListening = False
+        temp = client.get_command(name='play')
+        await temp.callback(ctx, "sounds/timeout.mp3")
+        await ctx.send(f"Buzzer timed out without response.")
+
+
 @client.command(brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
     global buzzerListening
     buzzerListening = True
     #Do an asyncio to timeout if no buzz in a period of time and play sound effect
+    #threading.Timer(3, await timeout(ctx), [ctx]).start()
+    #threading.Timer(2, timeout, [ctx]).start()
+
+
     await ctx.send(f"Listening for buzzer.")
 
 @client.command()
@@ -88,14 +102,8 @@ async def b(ctx) :
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
-        #Play buzzer sound effect here
-        #MusicPlayer.play(ctx,"sounds/buzz.mp3")
-        #await ctx.invoke(client.get_command('play'), filename="sounds/buzz.mp3")
-        #await MusicPlayer.play(client, ctx, filename="sounds/buzz.mp3")
-
         temp = client.get_command(name='play')
         await temp.callback(ctx, "sounds/buzz.mp3")
-
         await ctx.send(f"Player {ctx.message.author.name} buzzed first! They buzzed at time {currentTime}.")
 
 @client.event

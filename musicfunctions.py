@@ -9,7 +9,7 @@ class MusicPlayer(commands.Cog):
     @commands.command(name='giorno')
     async def giorno(self, ctx):
         vc = await getVoiceChannel(ctx)
-        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="sounds/buzz.mp3")) #, after=lambda e: vc.disconnect())
+        vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="oro.mp3")) #, after=lambda e: vc.disconnect())
 
     @commands.command(name='play')
     async def play(ctx, filename=""):
