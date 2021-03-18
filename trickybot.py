@@ -53,13 +53,16 @@ async def scores(ctx) :
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
     
+    print(f"inPlayer {inPlayer} ", flush=True)
+    print(f"inPoints {inPoints}", flush=True)
+
     #If the player swapped the syntax, swap the two inputs
-    if isinstance(inPlayer, numbers.Number):
+    if inPlayer.isnumeric():
         player = inPoints
-        points = inPlayer
+        points = int(inPlayer)
     else:
         player = inPlayer
-        points = inPoints
+        points = int(inPoints)
 
     if player=="":
         await ctx.send(f"No player entered. Cannot add points.")
@@ -72,7 +75,7 @@ async def add(ctx, inPoints, inPlayer) :
     scores[player] += points
     await ctx.send(f"Added {points} points to player {player}. Player {player} now has {scores[player]} points.")
 
-@client.command()
+@client.command(brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
     global buzzerListening
     buzzerListening = True
@@ -84,7 +87,7 @@ async def b(ctx) :
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
-        await ctx.send(f"Player {ctx.message.author.name} buzzed first!. They buzzed at time {currentTime}.")
+        await ctx.send(f"Player {ctx.message.author.name} buzzed first! They buzzed at time {currentTime}.")
 
 @client.event
 async def on_ready() :
