@@ -24,8 +24,9 @@ token = os.getenv("trickytoken")
 
 client.load_extension('musicfunctions')
 
+#Jeopary Globals
 scores={}
-
+lastDMs={}
 buzzerListening = False
 
 @client.command()
@@ -36,9 +37,11 @@ async def game(ctx) :
         await ctx.send(f"You are not connected to a voice channel {ctx.message.author.name}")
         return
 
-    global scores  
+    global scores, lastDMs  
 
     scores={}
+    lastDMs={}
+
     players = [] #(list)
     for member in channel.members:
         players.append(member.name)
@@ -47,9 +50,30 @@ async def game(ctx) :
     await ctx.send(f"Starting new jeopardy game with players {players}.")
 
 @client.command()
+async def addplayer(ctx, playerName="") :
+    if playerName=="":
+        return
+    
+    global scores
+    scores[playerName] = 0
+    await ctx.send(f"Player {playerName} has been added.")
+
+
+@client.command()
 async def scores(ctx) :
     global scores
     await ctx.send(f"Game scores: {scores}.")
+
+@client.command()
+async def final(ctx) :
+    global lastDMs
+
+    allAnswers=""
+
+    for player, answer in lastDMs.items(): 
+        allAnswers+=f"{player} : {answer} \n" 
+
+    await ctx.send(f"Final Jeopardy Answers: \n {allAnswers}")
 
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
@@ -105,6 +129,15 @@ async def b(ctx) :
         temp = client.get_command(name='play')
         await temp.callback(ctx, "sounds/buzz.mp3")
         await ctx.send(f"Player {ctx.message.author.name} buzzed first! They buzzed at time {currentTime}.")
+
+@client.event
+async def on_message(message):
+    if isinstance(message.channel, discord.channel.DMChannel) and message.author != client.user:
+        global lastDMs
+        lastDMs[message.author.name]=message.content
+        await message.channel.send(f'You relayed this to me: {message.content}')
+    
+    await client.process_commands(message)
 
 @client.event
 async def on_ready() :
