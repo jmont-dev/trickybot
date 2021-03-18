@@ -125,12 +125,22 @@ async def teams(ctx, numTeams=2) :
         await ctx.send(f"Only one person in voice channel {channel.name}. Cannot make teams.")
         return
 
-    for team in range(numTeams):
-        teamMembers = []
+    teamMembers = []
+    for team in range(0,numTeams):
+        teamMembers.append([])
+
+    team = 0
+    while len(unpickedPlayers)>0:
         player = random.choice(unpickedPlayers)
-        teamMembers.append(player)
+        teamMembers[team].append(player)
         unpickedPlayers.remove(player)
-        await ctx.send(f"Team {team+1}: {teamMembers}")
+        if team < numTeams-1:
+            team += 1
+        else:
+            team = 0
+
+    for team in range(0,numTeams):
+        await ctx.send(f"Team {team+1}: {teamMembers[team]}")
 
 @client.command()
 async def clear(ctx, amount=3) :
