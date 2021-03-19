@@ -98,7 +98,7 @@ async def add(ctx, inPoints, inPlayer) :
 
 async def timeout(ctx):
     #Quick solution since Threading.timer isn't working
-    await asyncio.sleep(3)
+    await asyncio.sleep(10)
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
