@@ -76,10 +76,6 @@ async def final(ctx) :
 
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
-    
-    print(f"inPlayer {inPlayer} ", flush=True)
-    print(f"inPoints {inPoints}", flush=True)
-
     #If the player swapped the syntax, swap the two inputs
     try:
         int(inPlayer)
@@ -101,6 +97,8 @@ async def add(ctx, inPoints, inPlayer) :
     await ctx.send(f"Added {points} points to player {player}. Player {player} now has {scores[player]} points.")
 
 async def timeout(ctx):
+    #Quick solution since Threading.timer isn't working
+    await asyncio.sleep(3)
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
@@ -109,13 +107,16 @@ async def timeout(ctx):
         await ctx.send(f"Buzzer timed out without response.")
 
 
-@client.command(brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
+@client.command(aliases=['l','question'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
     global buzzerListening
     buzzerListening = True
+    mytask = asyncio.create_task(timeout(ctx))
     #Do an asyncio to timeout if no buzz in a period of time and play sound effect
     #threading.Timer(3, await timeout(ctx), [ctx]).start()
-    #threading.Timer(2, timeout, [ctx]).start()
+    #threading.Timer(2, (await timeout(ctx)), [ctx]).start()
+
+
     await ctx.send(f"Listening for buzzer.")
 
 @client.command()
