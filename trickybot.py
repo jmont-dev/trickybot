@@ -145,6 +145,28 @@ async def on_ready() :
 async def imout(ctx) :
     await ctx.send(f"https://www.youtube.com/watch?v=JzFo83UOZY8")
 
+@client.command(aliases=['gme','stonk'])
+async def melvin(ctx) :
+    melvins = [f"https://www.youtube.com/watch?v=y5YOCPzAX8M",
+            f"https://twitter.com/i/status/1354809325412225026"]
+
+    melvin = random.choice(melvins)   
+
+    await ctx.send(f"{melvin}")  
+
+@client.command()
+async def vibe(ctx) :
+
+    cats = [f"https://www.youtube.com/watch?v=eZTS4cL4Euo",
+            f"https://www.youtube.com/watch?v=bFzrB-lo9k8",
+            f"https://www.youtube.com/watch?v=krlaWEIx4XY",
+            f"https://www.youtube.com/watch?v=2hpoLCpcWF4",
+            f"https://www.youtube.com/watch?v=dsODRfCMRoM"]
+
+    cat = random.choice(cats)   
+
+    await ctx.send(f"{cat}")
+
 @client.command()
 async def marco(ctx) :
     links = getLinks("https://en.wikipedia.org/wiki/Marco", "Marco_")
