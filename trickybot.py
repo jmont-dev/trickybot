@@ -115,8 +115,6 @@ async def listen(ctx) :
     #Do an asyncio to timeout if no buzz in a period of time and play sound effect
     #threading.Timer(3, await timeout(ctx), [ctx]).start()
     #threading.Timer(2, (await timeout(ctx)), [ctx]).start()
-
-
     await ctx.send(f"Listening for buzzer.")
 
 @client.command()
