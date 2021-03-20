@@ -148,12 +148,11 @@ async def answer(ctx) :
 
 @client.event
 async def on_reaction_add(reaction, user):
+
+    global lastQuestionValue, buzzerListening
+
     #Check if the user pressed the record button
-
-    global lastQuestionValue
-
-
-    if reaction.emoji =='⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
+    if buzzerListening and reaction.emoji =='⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
         #get(reaction.message.ctx.server.emojis, name="record_button"):
         print(f"Got reaction from {user.name}")
 
@@ -168,12 +167,30 @@ async def on_reaction_add(reaction, user):
     #If the user said the right answer, award them points
     if reaction.emoji =='✅' and reaction.message.content.startswith("Question") and user.name!="trickybot":
         
-        await reaction.message.channel.send(f"{user.name} got it right! They are awarded {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")
+
+        ctx = await client.get_context(reaction.message)
+        await client.get_command(name='add').callback(ctx, lastQuestionValue, user.name)
+
+        await reaction.message.channel.send(f"{user.name} got it right! They are awarded {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")        
+        
+        await reaction.message.delete()
+        
+        await client.get_command(name='play').callback(ctx, "sounds/ding.mp3")
+        await client.get_command('scores').callback(ctx)
 
     #If the user said the wrong answer, dock them points
     if reaction.emoji =='❌' and reaction.message.content.startswith("Question") and user.name!="trickybot":
         
+
+        ctx = await client.get_context(reaction.message)
+        await client.get_command(name='add').callback(ctx, -lastQuestionValue, user.name)
+
         await reaction.message.channel.send(f"{user.name} answered incorrectly. They are docked {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")
+        await client.get_command('scores').callback(ctx)
+        await reaction.message.delete()
+
+        #Pose the question to the players again
+        await client.get_command(name='question').callback(ctx, lastQuestionValue)
 
 
 @client.command()
