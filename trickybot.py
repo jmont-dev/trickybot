@@ -155,6 +155,17 @@ async def melvin(ctx) :
     await ctx.send(f"{melvin}")  
 
 @client.command()
+async def dongs(ctx) :
+
+    memes = [f"We slangin {ctx.message.author.name}?",
+            f"{ctx.message.author.name} got domed.",
+            f"Super Fergie Paper Mario",
+            f"Mike Bloomberg has a strong afinity for dogs.",
+            f"Settle it in Smash {ctx.message.author.name}."]       
+
+    await ctx.send(f"{random.choice(memes)}")
+
+@client.command()
 async def vibe(ctx) :
 
     cats = [f"https://www.youtube.com/watch?v=eZTS4cL4Euo",
