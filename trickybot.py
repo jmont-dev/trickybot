@@ -107,6 +107,12 @@ async def timeout(ctx):
         await ctx.send(f"Buzzer timed out without response.")
 
 
+#Add function to create music-player like UI after a question. Have the value of the question in the command.
+#.listen 400
+#When the user clicks on a reaction, calculate who clicked first and then write whether or not they answered correctly with a new command
+#.answer write wrong neutral
+#This will add/subtract the number of points specified in the last listen command to the user who clicked automatically. If wrong, the listen is restarted automatically and the UI is reposted.
+
 @client.command(aliases=['l','question'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
     global buzzerListening
