@@ -163,14 +163,13 @@ async def answer(ctx) :
 @client.event
 async def on_reaction_add(reaction, user):
 
-    global lastQuestionValue, buzzerListening, timertask
+    global lastQuestionValue, buzzerListening, timertask, userAnswering
     ctx = await client.get_context(reaction.message)
 
     #Check if the user pressed the record button
     if buzzerListening and reaction.emoji =='⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
         #get(reaction.message.ctx.server.emojis, name="record_button"):
-
-        global userAnswering
+         
         userAnswering = user.name
 
         await client.get_command('b').callback(ctx, userAnswering)
@@ -183,10 +182,7 @@ async def on_reaction_add(reaction, user):
         
 
         ctx = await client.get_context(reaction.message)
-        await client.get_command(name='add').callback(ctx, lastQuestionValue, user.name)
-
-        await reaction.message.channel.send(f"{user.name} got it right! They are awarded {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")        
-        
+        await client.get_command(name='add').callback(ctx, lastQuestionValue, userAnswering)        
         await reaction.message.delete()
 
         await client.get_command(name='play').callback(ctx, "sounds/ding.mp3")
@@ -197,9 +193,7 @@ async def on_reaction_add(reaction, user):
         
 
         ctx = await client.get_context(reaction.message)
-        await client.get_command(name='add').callback(ctx, -lastQuestionValue, user.name)
-
-        await reaction.message.channel.send(f"{user.name} answered incorrectly. They are docked {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")
+        await client.get_command(name='add').callback(ctx, -lastQuestionValue, userAnswering)
         await client.get_command('scores').callback(ctx)
         await reaction.message.delete()
 
