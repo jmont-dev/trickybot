@@ -148,7 +148,8 @@ async def question(ctx, points=0) :
 
     global buzzerListening, lastQuestionValue
     buzzerListening = True
-    mytask = asyncio.create_task(timeout(ctx))
+    global timertask
+    timertask = asyncio.create_task(timeout(ctx))
     lastQuestionValue = points
     msg = await ctx.send(f"Question is for ${lastQuestionValue}.") 
     await msg.add_reaction('⏺️')
@@ -162,7 +163,7 @@ async def answer(ctx) :
 @client.event
 async def on_reaction_add(reaction, user):
 
-    global lastQuestionValue, buzzerListening
+    global lastQuestionValue, buzzerListening, timertask
     ctx = await client.get_context(reaction.message)
 
     #Check if the user pressed the record button
@@ -175,6 +176,7 @@ async def on_reaction_add(reaction, user):
         await client.get_command('b').callback(ctx, userAnswering)
         await reaction.message.add_reaction("✅")
         await reaction.message.add_reaction("❌")
+        timertask.cancel()
 
     #If the user said the right answer, award them points
     if reaction.emoji =='✅' and reaction.message.content.startswith("Question") and user.name!="trickybot":
