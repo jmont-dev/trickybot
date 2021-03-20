@@ -28,6 +28,8 @@ client.load_extension('musicfunctions')
 scores={}
 lastDMs={}
 buzzerListening = False
+userAnswering = ""
+lastQuestionValue = 200
 
 @client.command()
 async def game(ctx) :
@@ -73,7 +75,7 @@ async def final(ctx) :
     for player, answer in lastDMs.items(): 
         allAnswers+=f"{player} : {answer} \n" 
 
-    await ctx.send(f"Final Jeopardy Answers: \n {allAnswers}")
+    await ctx.send(f"Final Jeopardy Answers: \n{allAnswers}")
 
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
@@ -131,30 +133,48 @@ async def question(ctx, points=0) :
         await ctx.send(f"Must specify a points value for the question.")
         return
 
-    global buzzerListening
+    global buzzerListening, lastQuestionValue
     buzzerListening = True
     mytask = asyncio.create_task(timeout(ctx))
-    #Do an asyncio to timeout if no buzz in a period of time and play sound effect
-    #threading.Timer(3, await timeout(ctx), [ctx]).start()
-    #threading.Timer(2, (await timeout(ctx)), [ctx]).start()
-    
-    msg = await ctx.send(f"Question is for ${points}.") 
+    lastQuestionValue = points
+    msg = await ctx.send(f"Question is for ${lastQuestionValue}.") 
     await msg.add_reaction('⏺️')
 
 
+@client.command(aliases=['a'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
+async def answer(ctx) :   
+
+    await msg.add_reaction('⏺️')
+
 @client.event
 async def on_reaction_add(reaction, user):
-    #Check for the record button on questions
-    if reaction.emoji ==  '⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
-        #get(reaction.message.ctx.server.emojis, name="record_button"):
-        #'\N{Black Circle for Record}':
+    #Check if the user pressed the record button
 
-        #'Congratulations!' in reaction.message.content and
-        #add reaction to message
+    global lastQuestionValue
+
+
+    if reaction.emoji =='⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
+        #get(reaction.message.ctx.server.emojis, name="record_button"):
         print(f"Got reaction from {user.name}")
-        emoji = '\N{THUMBS UP SIGN}'
-        await reaction.message.add_reaction(emoji)
-        await client.b(ctx)
+
+        global userAnswering
+        userAnswering = user.name
+
+        ctx = await client.get_context(reaction.message)
+        await client.get_command('b').callback(ctx)
+        await reaction.message.add_reaction("✅")
+        await reaction.message.add_reaction("❌")
+
+    #If the user said the right answer, award them points
+    if reaction.emoji =='✅' and reaction.message.content.startswith("Question") and user.name!="trickybot":
+        
+        await reaction.message.channel.send(f"{user.name} got it right! They are awarded {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")
+
+    #If the user said the wrong answer, dock them points
+    if reaction.emoji =='❌' and reaction.message.content.startswith("Question") and user.name!="trickybot":
+        
+        await reaction.message.channel.send(f"{user.name} answered incorrectly. They are docked {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")
+
 
 @client.command()
 async def b(ctx) :
