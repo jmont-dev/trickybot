@@ -26,6 +26,7 @@ client.load_extension('musicfunctions')
 
 #Jeopary Globals
 scores={}
+wagers={}
 lastDMs={}
 buzzerListening = False
 userAnswering = ""
@@ -39,10 +40,11 @@ async def game(ctx) :
         await ctx.send(f"You are not connected to a voice channel {ctx.message.author.name}")
         return
 
-    global scores, lastDMs  
+    global scores, lastDMs, wagers  
 
     scores={}
     lastDMs={}
+    wagers={}
 
     players = []
     for member in channel.members:
@@ -76,6 +78,17 @@ async def final(ctx) :
         allAnswers+=f"{player} : {answer} \n" 
 
     await ctx.send(f"Final Jeopardy Answers: \n{allAnswers}")
+
+@client.command()
+async def wagers(ctx) :
+    global wagers
+
+    allWagers=""
+
+    for player, wager in wagers.items(): 
+        allWagers+=f"{player} : {wager} \n" 
+
+    await ctx.send(f"Wagers: \n{allWagers}")
 
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
@@ -150,17 +163,16 @@ async def answer(ctx) :
 async def on_reaction_add(reaction, user):
 
     global lastQuestionValue, buzzerListening
+    ctx = await client.get_context(reaction.message)
 
     #Check if the user pressed the record button
     if buzzerListening and reaction.emoji =='⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
         #get(reaction.message.ctx.server.emojis, name="record_button"):
-        print(f"Got reaction from {user.name}")
 
         global userAnswering
         userAnswering = user.name
 
-        ctx = await client.get_context(reaction.message)
-        await client.get_command('b').callback(ctx)
+        await client.get_command('b').callback(ctx, userAnswering)
         await reaction.message.add_reaction("✅")
         await reaction.message.add_reaction("❌")
 
@@ -174,7 +186,7 @@ async def on_reaction_add(reaction, user):
         await reaction.message.channel.send(f"{user.name} got it right! They are awarded {lastQuestionValue} points. \n{user.name} currently has {scores[user.name]} points.")        
         
         await reaction.message.delete()
-        
+
         await client.get_command(name='play').callback(ctx, "sounds/ding.mp3")
         await client.get_command('scores').callback(ctx)
 
@@ -189,19 +201,34 @@ async def on_reaction_add(reaction, user):
         await client.get_command('scores').callback(ctx)
         await reaction.message.delete()
 
+        await client.get_command(name='play').callback(ctx, "sounds/wrong.mp3")
+
         #Pose the question to the players again
         await client.get_command(name='question').callback(ctx, lastQuestionValue)
 
 
 @client.command()
-async def b(ctx) :
+async def wager(ctx, points=0) :
+    if points==0:
+        await ctx.send(f'You must specify the amount to wager.')
+        return
+
+    global wagers
+    wagers[ctx.message.author.name]=points
+    await ctx.send(f'{ctx.message.author.name} wagered ${points}')
+
+@client.command()
+async def b(ctx, player="") :
     currentTime = datetime.now().strftime("%H:%M:%S.%f")
     global buzzerListening
     if buzzerListening==True:
         buzzerListening = False
+
         temp = client.get_command(name='play')
         await temp.callback(ctx, "sounds/buzz.mp3")
-        await ctx.send(f"Player {ctx.message.author.name} buzzed first! They buzzed at time {currentTime}.")
+        if player=="":
+            player = ctx.message.author.name
+        await ctx.send(f"Player {player} buzzed first! They buzzed at time {currentTime}.")
 
 @client.event
 async def on_message(message):
