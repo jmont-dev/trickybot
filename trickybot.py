@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord.utils import get
 
 import os
 import random
@@ -113,7 +114,7 @@ async def timeout(ctx):
 #.answer write wrong neutral
 #This will add/subtract the number of points specified in the last listen command to the user who clicked automatically. If wrong, the listen is restarted automatically and the UI is reposted.
 
-@client.command(aliases=['l','question'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
+@client.command(aliases=['l'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
     global buzzerListening
     buzzerListening = True
@@ -122,6 +123,38 @@ async def listen(ctx) :
     #threading.Timer(3, await timeout(ctx), [ctx]).start()
     #threading.Timer(2, (await timeout(ctx)), [ctx]).start()
     await ctx.send(f"Listening for buzzer.")
+
+@client.command(aliases=['q'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
+async def question(ctx, points=0) :
+    
+    if points==0:
+        await ctx.send(f"Must specify a points value for the question.")
+        return
+
+    global buzzerListening
+    buzzerListening = True
+    mytask = asyncio.create_task(timeout(ctx))
+    #Do an asyncio to timeout if no buzz in a period of time and play sound effect
+    #threading.Timer(3, await timeout(ctx), [ctx]).start()
+    #threading.Timer(2, (await timeout(ctx)), [ctx]).start()
+    
+    msg = await ctx.send(f"Question is for ${points}.") 
+    await msg.add_reaction('⏺️')
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    #Check for the record button on questions
+    if reaction.emoji ==  '⏺️' and reaction.message.content.startswith("Question") and user.name!="trickybot":
+        #get(reaction.message.ctx.server.emojis, name="record_button"):
+        #'\N{Black Circle for Record}':
+
+        #'Congratulations!' in reaction.message.content and
+        #add reaction to message
+        print(f"Got reaction from {user.name}")
+        emoji = '\N{THUMBS UP SIGN}'
+        await reaction.message.add_reaction(emoji)
+        await client.b(ctx)
 
 @client.command()
 async def b(ctx) :
