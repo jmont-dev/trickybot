@@ -14,10 +14,11 @@ from datetime import datetime
 from webfunctions import *
 from musicfunctions import *
 
+#Must load intents in the new Discord API
 intents = discord.Intents().default()
 intents.members = True
 
-# create the instance
+# Create the instance. Make sure "trickytoken" is set in the environment to your bot token beforehand.
 client = commands.Bot(command_prefix=".", intents=intents)
 token = os.getenv("trickytoken")
 
@@ -30,7 +31,7 @@ wagers={}
 lastDMs={}
 buzzerListening = False
 userAnswering = ""
-lastQuestionValue = 200
+lastQuestionValue = 0
 
 @client.command()
 async def game(ctx) :
@@ -121,13 +122,6 @@ async def timeout(ctx):
         temp = client.get_command(name='play')
         await temp.callback(ctx, "sounds/timeout.mp3")
         await ctx.send(f"Buzzer timed out without response.")
-
-
-#Add function to create music-player like UI after a question. Have the value of the question in the command.
-#.listen 400
-#When the user clicks on a reaction, calculate who clicked first and then write whether or not they answered correctly with a new command
-#.answer write wrong neutral
-#This will add/subtract the number of points specified in the last listen command to the user who clicked automatically. If wrong, the listen is restarted automatically and the UI is reposted.
 
 @client.command(aliases=['l'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def listen(ctx) :
