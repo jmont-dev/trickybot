@@ -44,19 +44,19 @@ engine = pyttsx3.init()
 async def speech(ctx, text) :
     language = 'en'  
     myobj = gTTS(text=text, lang=language, slow=False)
-    myobj.save("text.mp3")
+    myobj.save("welcome.mp3")
 
     #global engine
     #voices = engine.getProperty("voices")
     #print(voices)
-    #engine.save_to_file(mytext, "text.mp3")
+    #engine.save_to_file(mytext, "welcome.mp3")
     #engine.runAndWait()
 
     temp = client.get_command(name='play')
-    await temp.callback(ctx, "text.mp3")
+    await temp.callback(ctx, "welcome.mp3")
 
     # Playing the converted file
-    #os.system("mpg321 text.mp3")
+    #os.system("mpg321 welcome.mp3")
 
 @client.command()
 async def game(ctx) :
