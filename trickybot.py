@@ -11,6 +11,10 @@ import threading
 import time
 from datetime import datetime
 
+from playsound import playsound
+from gtts import gTTS
+import pyttsx3
+
 from webfunctions import *
 from musicfunctions import *
 
@@ -32,6 +36,27 @@ lastDMs={}
 buzzerListening = False
 userAnswering = ""
 lastQuestionValue = 0
+
+#Text to speech engine
+engine = pyttsx3.init()
+
+@client.command()
+async def speech(ctx, text) :
+    language = 'en'  
+    myobj = gTTS(text=text, lang=language, slow=False)
+    myobj.save("welcome.mp3")
+
+    #global engine
+    #voices = engine.getProperty("voices")
+    #print(voices)
+    #engine.save_to_file(mytext, "welcome.mp3")
+    #engine.runAndWait()
+
+    temp = client.get_command(name='play')
+    await temp.callback(ctx, "welcome.mp3")
+
+    # Playing the converted file
+    #os.system("mpg321 welcome.mp3")
 
 @client.command()
 async def game(ctx) :
