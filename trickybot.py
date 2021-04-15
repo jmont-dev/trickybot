@@ -40,8 +40,12 @@ lastQuestionValue = 0
 #Text to speech engine
 engine = pyttsx3.init()
 
-@client.command()
-async def speech(ctx, text) :
+@client.command(aliases=['s'])
+async def speech(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+    
     language = 'en'  
     myobj = gTTS(text=text, lang=language, slow=False)
     myobj.save("sounds/text.mp3")
@@ -115,6 +119,14 @@ async def wagers(ctx) :
         allWagers+=f"{player} : {wager} \n" 
 
     await ctx.send(f"Wagers: \n{allWagers}")
+
+@client.command()
+async def repeat(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    await ctx.send(f"{text}")
 
 @client.command()
 async def add(ctx, inPoints, inPlayer) :
