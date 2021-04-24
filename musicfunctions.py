@@ -1,6 +1,10 @@
 import discord
 from discord.ext import commands
 
+import youtube_dl
+import os
+
+
 class MusicPlayer(commands.Cog):
 
     def __init__(self, bot):
@@ -43,6 +47,34 @@ class MusicPlayer(commands.Cog):
     async def disconnect(self, ctx):
         vc = await getVoiceChannel(ctx)
         await vc.disconnect()
+
+    @commands.command(name='youtube')
+    async def youtube(self, ctx, url : str):
+        song_there = os.path.isfile("song.mp3")
+        try:
+            if song_there:
+                os.remove("song.mp3")
+        except PermissionError:
+            await ctx.send("Wait for the current playing music to end or use the 'stop' command")
+            return
+
+        vc = await getVoiceChannel(ctx)
+
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'default_search': 'ytsearch',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192'
+            }],
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        for file in os.listdir("./"):
+            if file.endswith(".mp3"):
+                os.rename(file, "song.mp3")
+        vc.play(discord.FFmpegPCMAudio("song.mp3"))
 
 #Get the voice channel of the author
 async def getVoiceChannel(ctx):
