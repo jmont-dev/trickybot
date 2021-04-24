@@ -22,8 +22,8 @@ class MusicPlayer(commands.Cog):
        # await ctx.send(f"I, trickybot, have a dream.")
         vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source="sounds/muda.mp3")) #, after=lambda e: vc.disconnect())
 
-    @commands.command(name='play')
-    async def play(ctx, filename=""):
+    @commands.command(name='playlocal')
+    async def playlocal(ctx, filename=""):
         vc = await getVoiceChannel(ctx)
         vc.play(discord.FFmpegPCMAudio(executable="C:/ffmpeg/bin/ffmpeg.exe", source=filename)) #, after=lambda e: vc.disconnect())
 
@@ -48,8 +48,12 @@ class MusicPlayer(commands.Cog):
         vc = await getVoiceChannel(ctx)
         await vc.disconnect()
 
-    @commands.command(name='youtube')
-    async def youtube(self, ctx, url : str):
+    @commands.command(name='play')
+    async def play(self, ctx, *args):
+        url = ""
+        for string in args:
+            url+=(string+" ")
+
         song_there = os.path.isfile("song.mp3")
         try:
             if song_there:
