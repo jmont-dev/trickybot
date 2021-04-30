@@ -56,7 +56,7 @@ async def speech(ctx, *args) :
     #engine.save_to_file(mytext, "sounds/text.mp3")
     #engine.runAndWait()
 
-    temp = client.get_command(name='play')
+    temp = client.get_command(name='playlocal')
     await temp.callback(ctx, "sounds/text.mp3")
 
     # Playing the converted file
