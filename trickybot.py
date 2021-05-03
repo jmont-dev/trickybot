@@ -18,6 +18,7 @@ import pyttsx3
 import requests
 from bs4 import BeautifulSoup
 
+import wikipedia
 from googlesearch import search
 
 from webfunctions import *
@@ -53,6 +54,22 @@ async def lmgtfy(ctx, *args) :
 
     await ctx.send(f"{search(text, num_results=1)[0]}")
 
+@client.command()
+async def wiki(ctx, *args) :
+    query = ""
+    for string in args:
+        query+=(string+" ")
+
+    try:
+        results = wikipedia.search(query)
+        summary = wikipedia.summary(results[0], sentences=3)
+    except wikipedia.DisambiguationError as e:
+
+        await ctx.send("Disambiguation error. Please search for one of the following options.")
+        await ctx.send(f"{e.options}")       
+        return
+
+    await ctx.send(f"{summary}")
 
 @client.command(aliases=['s'])
 async def speech(ctx, *args) :
