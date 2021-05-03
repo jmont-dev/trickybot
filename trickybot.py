@@ -15,6 +15,11 @@ from playsound import playsound
 from gtts import gTTS
 import pyttsx3
 
+import requests
+from bs4 import BeautifulSoup
+
+from googlesearch import search
+
 from webfunctions import *
 from musicfunctions import *
 
@@ -39,6 +44,15 @@ lastQuestionValue = 0
 
 #Text to speech engine
 engine = pyttsx3.init()
+
+@client.command(aliases=['g'])
+async def lmgtfy(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    await ctx.send(f"{search(text, num_results=1)[0]}")
+
 
 @client.command(aliases=['s'])
 async def speech(ctx, *args) :
