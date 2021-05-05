@@ -53,7 +53,10 @@ engine = pyttsx3.init()
 @client.command(aliases=['wc'])
 async def wordcloud(ctx, num_messages=10) :
 
-    await ctx.send(f"Generating wordcloud for {num_messages} past messages.")
+    if num_messages>1000:
+        num_messages=1000
+
+    await ctx.send(f"Generating wordcloud for past {num_messages} messages.")
 
     messages = await ctx.channel.history(limit=num_messages).flatten()
 
