@@ -27,6 +27,8 @@ import matplotlib.pyplot as plt
 #from chatterbot import ChatBot
 #from chatterbot.trainers import ChatterBotCorpusTrainer
 
+import gpt_2_simple as gpt2
+
 from webfunctions import *
 from musicfunctions import *
 
@@ -56,6 +58,29 @@ engine = pyttsx3.init()
 #chatbot = ChatBot('Ron Obvious')
 #trainer = ChatterBotCorpusTrainer(chatbot)
 #trainer.train("chatterbot.corpus.english")
+
+#GPT-2
+model_name = "124M"
+if not os.path.isdir(os.path.join("models", model_name)):
+	print(f"Downloading {model_name} model...")
+	gpt2.download_gpt2(model_name=model_name)
+
+file_name = "shakespeare.txt"
+if not os.path.isfile(file_name):
+	url = "https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt"
+	data = requests.get(url)
+	
+	with open(file_name, 'w') as f:
+		f.write(data.text)
+
+sess = gpt2.start_tf_sess()
+gpt2.finetune(sess,
+              file_name,
+              model_name=model_name,
+              steps=1000)   # steps is max number of training steps
+
+gpt2.generate(sess)
+
 
 @client.command()
 async def chat(ctx, *args) :
@@ -361,16 +386,16 @@ async def melvin(ctx) :
 
     await ctx.send(f"{melvin}")  
 
-@client.command()
-async def dongs(ctx) :
-
-    memes = [f"We slangin {ctx.message.author.name}?",
-            f"{ctx.message.author.name} got domed.",
-            f"Super Fergie Paper Mario",
-            f"Mike Bloomberg has a strong affinity for dogs.",
-            f"Settle it in Smash {ctx.message.author.name}."]       
-
-    await ctx.send(f"{random.choice(memes)}")
+#@client.command()
+#async def dongs(ctx) :
+#
+#    memes = [f"We slangin {ctx.message.author.name}?",
+#            f"{ctx.message.author.name} got domed.",
+#            f"Super Fergie Paper Mario",
+#            f"Mike Bloomberg has a strong affinity for dogs.",
+#            f"Settle it in Smash {ctx.message.author.name}."]       
+#
+#    await ctx.send(f"{random.choice(memes)}")
 
 @client.command()
 async def goodshit(ctx) :     
