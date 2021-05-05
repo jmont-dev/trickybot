@@ -24,6 +24,9 @@ from googlesearch import search
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
+#from chatterbot import ChatBot
+#from chatterbot.trainers import ChatterBotCorpusTrainer
+
 from webfunctions import *
 from musicfunctions import *
 
@@ -49,19 +52,32 @@ lastQuestionValue = 0
 #Text to speech engine
 engine = pyttsx3.init()
 
+#Chatbot
+#chatbot = ChatBot('Ron Obvious')
+#trainer = ChatterBotCorpusTrainer(chatbot)
+#trainer.train("chatterbot.corpus.english")
+
+@client.command()
+async def chat(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    response = chatbot.get_response(text)
+    await ctx.send(f"{response}")
 
 @client.command(aliases=['wc'])
 async def wordcloud(ctx, num_messages=10) :
 
-    if num_messages>1000:
-        num_messages=1000
+    if num_messages<1: num_messages=1
+    if num_messages>1000: num_messages=1000
 
     await ctx.send(f"Generating wordcloud for past {num_messages} messages.")
 
-    messages = await ctx.channel.history(limit=num_messages).flatten()
+    messages = await ctx.channel.history(limit=num_messages+2).flatten()
 
     all_text=""
-    for msg in messages:
+    for msg in messages[2:]:
         all_text += msg.content
 
     #print(all_text)
@@ -351,7 +367,7 @@ async def dongs(ctx) :
     memes = [f"We slangin {ctx.message.author.name}?",
             f"{ctx.message.author.name} got domed.",
             f"Super Fergie Paper Mario",
-            f"Mike Bloomberg has a strong afinity for dogs.",
+            f"Mike Bloomberg has a strong affinity for dogs.",
             f"Settle it in Smash {ctx.message.author.name}."]       
 
     await ctx.send(f"{random.choice(memes)}")
