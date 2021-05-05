@@ -21,6 +21,9 @@ from bs4 import BeautifulSoup
 import wikipedia
 from googlesearch import search
 
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
 from webfunctions import *
 from musicfunctions import *
 
@@ -45,6 +48,30 @@ lastQuestionValue = 0
 
 #Text to speech engine
 engine = pyttsx3.init()
+
+
+@client.command(aliases=['wc'])
+async def wordcloud(ctx, num_messages=10) :
+
+    await ctx.send(f"Generating wordcloud for {num_messages} past messages.")
+
+    messages = await ctx.channel.history(limit=num_messages).flatten()
+
+    all_text=""
+    for msg in messages:
+        all_text += msg.content
+
+    #print(all_text)
+
+    wordcloud = WordCloud().generate(all_text)
+    wordcloud.to_file('wordcloud.png')
+
+    await ctx.send(file=discord.File('wordcloud.png'))
+
+
+@client.command()
+async def timeout(ctx, time) :
+    await ctx.send(f"I am in timeout for {time} seconds")
 
 @client.command(aliases=['g'])
 async def lmgtfy(ctx, *args) :
