@@ -27,8 +27,6 @@ import matplotlib.pyplot as plt
 #from chatterbot import ChatBot
 #from chatterbot.trainers import ChatterBotCorpusTrainer
 
-import gpt_2_simple as gpt2
-
 from webfunctions import *
 from musicfunctions import *
 
@@ -81,15 +79,78 @@ engine = pyttsx3.init()
 
 #gpt2.generate(sess)
 
+import torch
+#from transformers import GPT2LMHeadModel, GPT2Tokenizer, pipeline, Conversation
+from transformers import pipeline, Conversation
 
-@client.command()
+# initialize tokenizer and model from pretrained GPT2 model
+#tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+#model = GPT2LMHeadModel.from_pretrained('gpt2')
+
+#sequence = "Our model, called GPT-2 (a successor to GPT), was trained simply to predict the next word in 40GB of Internet text. Due to our concerns about malicious applications of the technology, we are not releasing the trained model. As an experiment in responsible disclosure, we are instead releasing a much smaller model for researchers to experiment with, as well as a technical paper."
+
+#inputs = tokenizer.encode(sequence, return_tensors='pt')
+
+#outputs = model.generate(inputs, max_length=200, do_sample=True)
+
+#text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+#print(text)
+
+conversational_pipeline = pipeline("conversational")
+conversation = Conversation()
+
+
+@client.command(aliases=['cr'])
+async def chatreset(ctx) :
+
+    global conversation
+    conversation = Conversation()
+
+    await ctx.send(f"Conversation was reset.")
+
+@client.command(aliases=['c'])
 async def chat(ctx, *args) :
     text = ""
     for string in args:
         text+=(string+" ")
 
-    response = chatbot.get_response(text)
+    global conversation, conversational_pipeline
+
+    conversation.add_user_input(text)
+    response = conversational_pipeline(conversation)
+
     await ctx.send(f"{response}")
+
+@client.command()
+async def gpt2train(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global inputs
+    inputs = tokenizer.encode(text, return_tensors='pt')
+
+    await ctx.send(f"Trained GPT-2 using provided text.")
+
+@client.command()
+async def gpt2generate(ctx) :
+
+    global inputs, model, tokenizer
+
+    outputs = model.generate(inputs, max_length=10, do_sample=True)
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    await ctx.send(f"{response}")
+
+
+#@client.command()
+#async def chat(ctx, *args) :
+#    text = ""
+#    for string in args:
+#        text+=(string+" ")
+#
+#    response = chatbot.get_response(text)
+#    await ctx.send(f"{response}")
 
 @client.command(aliases=['wc'])
 async def wordcloud(ctx, num_messages=10) :
@@ -411,6 +472,7 @@ async def vibe(ctx) :
             f"https://www.youtube.com/watch?v=bFzrB-lo9k8",
             f"https://www.youtube.com/watch?v=krlaWEIx4XY",
             f"https://www.youtube.com/watch?v=2hpoLCpcWF4",
+            f"https://www.youtube.com/watch?v=_MWDJ278zo4",
             f"https://www.youtube.com/watch?v=dsODRfCMRoM"]
 
     cat = random.choice(cats)   
