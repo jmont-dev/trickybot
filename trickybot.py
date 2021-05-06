@@ -81,7 +81,7 @@ engine = pyttsx3.init()
 
 import torch
 #from transformers import GPT2LMHeadModel, GPT2Tokenizer, pipeline, Conversation
-from transformers import pipeline, Conversation
+from transformers import pipeline, Conversation, set_seed
 
 # initialize tokenizer and model from pretrained GPT2 model
 #tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
@@ -99,6 +99,52 @@ from transformers import pipeline, Conversation
 
 conversational_pipeline = pipeline("conversational")
 conversation = Conversation()
+
+#GPT-2 Text generator
+generator = pipeline('text-generation', model='gpt2')
+
+#GPT-2 Question Answering Pipeline
+question_answering = pipeline("question-answering")
+
+
+qa_knowledge = "Machine learning (ML) is the study of computer algorithms that improve automatically through experience. It is seen as a part of artificial intelligence. Machine learning algorithms build a model based on sample data, known as training data, in order to make predictions or decisions without being explicitly programmed to do so. Machine learning algorithms are used in a wide variety of applications, such as email filtering and computer vision, where it is difficult or unfeasible to develop conventional algorithms to perform the needed tasks."
+
+
+@client.command(aliases=['e'])
+async def educate(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global qa_knowledge
+    qa_knowledge += text
+
+    await ctx.send(f"Added data to knowledge base.")
+
+@client.command(aliases=['a'])
+async def ask(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global question_answering, qa_knowledge
+
+    result = question_answering(question=text, context=qa_knowledge)
+
+    await ctx.send(f"{result['answer']}")
+
+@client.command(aliases=['gen, finish'])
+async def gpt2gen(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global generator
+    set_seed(42)
+
+    responses = generator(text, max_length=30, num_return_sequences=5)
+
+    await ctx.send(f"{random.choice(responses)['generated_text']}")
 
 
 @client.command(aliases=['cr'])
@@ -349,7 +395,7 @@ async def question(ctx, points=0) :
     await msg.add_reaction('⏺️')
 
 
-@client.command(aliases=['a'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
+@client.command(aliases=['answ'],brief='Listen for the next buzzer input.', description='Will identify the user who buzzes next with the .b command. Must be reset after a player buzzes in.')
 async def answer(ctx) :   
 
     await msg.add_reaction('⏺️')
