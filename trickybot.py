@@ -116,7 +116,7 @@ async def chat(ctx, *args) :
         text+=(string+" ")
 
     global conversation, conversational_pipeline
-
+    #conversation = Conversation()
     conversation.add_user_input(text)
     response = conversational_pipeline(conversation)
 
