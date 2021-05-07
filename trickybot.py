@@ -106,8 +106,49 @@ generator = pipeline('text-generation', model='gpt2')
 #GPT-2 Question Answering Pipeline
 question_answering = pipeline("question-answering")
 
-
 qa_knowledge = "Machine learning (ML) is the study of computer algorithms that improve automatically through experience. It is seen as a part of artificial intelligence. Machine learning algorithms build a model based on sample data, known as training data, in order to make predictions or decisions without being explicitly programmed to do so. Machine learning algorithms are used in a wide variety of applications, such as email filtering and computer vision, where it is difficult or unfeasible to develop conventional algorithms to perform the needed tasks."
+
+#Simple Transformers library
+
+from simpletransformers.conv_ai import ConvAIModel
+
+train_args = {
+    "overwrite_output_dir": True,
+    "reprocess_input_data": True
+}
+
+
+model = ConvAIModel("gpt", "gpt_personachat_cache", use_cuda=False, args=train_args)
+model.train_model()
+
+history = [
+    "Hello, what's your name?",
+    "Geralt",
+    "What do you do for a living?",
+    "I hunt monsters",
+]
+
+personality=[
+    "My name is Geralt.",
+    "I hunt monsters.",
+    "I say hmm a lot.",
+]
+
+@client.command(aliases=['e'])
+async def interact(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global model, history, personality
+
+    response, history = model.interact_single(
+        text,
+        history,
+        personality=personality
+    )
+
+    await ctx.send(f"{response}")
 
 @client.command(aliases=['u'])
 async def untrain(ctx, *args) :
