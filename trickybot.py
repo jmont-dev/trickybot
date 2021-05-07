@@ -134,6 +134,42 @@ personality=[
     "I say hmm a lot.",
 ]
 
+import lyricsgenius
+genius = lyricsgenius.Genius(token)
+
+
+
+@client.command(aliases=[])
+async def lyrics(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    global genius
+
+    song = genius.search_song(text)
+    print(song.lyrics)
+
+    max_chars_per_message = 2000
+
+    remaining_chars = len(song.lyrics)
+    messages_sent = 0
+
+
+    if len(song.lyrics)>2000:
+        await ctx.send(f"{song.lyrics[:2000]}")
+    else:
+        await ctx.send(f"{song.lyrics}")
+
+#    while remaining_chars>0:
+#        if remaining_chars>2000:
+#            await ctx.send(f"{song.lyrics[(messages_sent+1)*2000:2000*(messages_sent+1)]}")
+#            remaining_chars-=2000
+#        else:
+#            await ctx.send(f"{song.lyrics[(messages_sent+1)*2000:(messages_sent+1)*2000+remaining_chars]}")
+#            remaining_chars = 0    
+
+
 @client.command(aliases=[])
 async def interact(ctx, *args) :
     text = ""
@@ -190,7 +226,7 @@ async def gpt2gen(ctx, *args) :
     global generator
     set_seed(42)
 
-    responses = generator(text, max_length=30, num_return_sequences=5)
+    responses = generator(text, max_length=100, num_return_sequences=5)
 
     await ctx.send(f"{random.choice(responses)['generated_text']}")
 
