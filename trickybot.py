@@ -118,8 +118,8 @@ train_args = {
 }
 
 
-model = ConvAIModel("gpt", "gpt_personachat_cache", use_cuda=False, args=train_args)
-model.train_model()
+#model = ConvAIModel("gpt", "gpt_personachat_cache", use_cuda=False, args=train_args)
+#model.train_model()
 
 history = [
     "Hello, what's your name?",
@@ -134,7 +134,7 @@ personality=[
     "I say hmm a lot.",
 ]
 
-@client.command(aliases=['e'])
+@client.command(aliases=[])
 async def interact(ctx, *args) :
     text = ""
     for string in args:

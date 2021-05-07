@@ -2,6 +2,9 @@ sounds/oro.mp3
 sounds/muda.mp3
 sounds/text.mp3
 db.*
+*.json
+*.bin
+*.txt
 *.png
 *.exe
 *.mp3
