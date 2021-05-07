@@ -647,7 +647,7 @@ async def badbot(ctx) :
 
     message = random.choice(messages)      
 
-    await ctx.send(message, tts=True)
+    await ctx.send(message, tts=False)
 
 @client.command()
 async def goodbot(ctx) :
@@ -659,7 +659,7 @@ async def goodbot(ctx) :
 
     message = random.choice(messages)      
 
-    await ctx.send(message, tts=True)
+    await ctx.send(message, tts=False)
 
 @client.command()
 async def videogamename(ctx) :
