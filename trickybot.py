@@ -140,14 +140,19 @@ genius = lyricsgenius.Genius(token)
 from aitextgen import aitextgen
 
 # Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
-ai = aitextgen()
+ai = aitextgen(model="gpt2")
 
-ai.generate()
-ai.generate(n=3, max_length=100)
-sampleai = ai.generate(n=3, prompt="I believe in unicorns because", max_length=100)
-print(sampleai)
-#ai.generate_to_file(n=10, prompt="I believe in unicorns because", max_length=100, temperature=1.2)
+@client.command(aliases=['ai'])
+async def aitextgen(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
 
+    global ai
+
+    ai_response = ai.generate_one(prompt=text, max_length=100)
+
+    await ctx.send(f"{ai_response}")
 
 @client.command(aliases=[])
 async def lyrics(ctx, *args) :
