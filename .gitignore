@@ -1,6 +1,7 @@
 sounds/oro.mp3
 sounds/muda.mp3
 sounds/text.mp3
+aitextgen/*
 db.*
 *.json
 *.bin
