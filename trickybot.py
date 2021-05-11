@@ -154,6 +154,14 @@ async def aitextgen(ctx, *args) :
 
     await ctx.send(f"{ai_response}")
 
+@client.command()
+async def compute(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    await ctx.send(f"{eval(text)}")
+
 @client.command(aliases=[])
 async def lyrics(ctx, *args) :
     text = ""
