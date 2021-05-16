@@ -140,7 +140,7 @@ genius = lyricsgenius.Genius(token)
 from aitextgen import aitextgen
 
 # Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
-ai = aitextgen(model="gpt2")
+ai = aitextgen(model="EleutherAI/gpt-neo-2.7B")
 
 @client.command(aliases=['ai'])
 async def aitextgen(ctx, *args) :
