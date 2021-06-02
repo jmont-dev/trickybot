@@ -140,7 +140,21 @@ genius = lyricsgenius.Genius(token)
 from aitextgen import aitextgen
 
 # Without any parameters, aitextgen() will download, cache, and load the 124M GPT-2 "small" model
-ai = aitextgen(model="EleutherAI/gpt-neo-2.7B")
+ai = aitextgen(model="EleutherAI/gpt-neo-125M")
+
+import pyqrcode
+
+@client.command(aliases=['qr'])
+async def qrcode(ctx, *args) :
+    text = ""
+    for string in args:
+        text+=(string+" ")
+
+    qr = pyqrcode.create(text)
+
+    qr.png('qrcode.png', scale=5)
+
+    await ctx.send(file=discord.File('qrcode.png'))
 
 @client.command(aliases=['ai'])
 async def aitextgen(ctx, *args) :

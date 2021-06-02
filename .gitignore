@@ -5,7 +5,6 @@ aitextgen/*
 db.*
 *.json
 *.bin
-*.txt
 *.png
 *.exe
 *.mp3
