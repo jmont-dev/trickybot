@@ -8,6 +8,7 @@ Includes the following:
 * Conversational AI and text generation (GPT-2/transformers)
 * Wordcloud and QR code generation
 * Wikipedia, Google, and Genius lookup
+* Jeopardy implementation using discord reactions
 * And much more
 
 Install dependencies:
